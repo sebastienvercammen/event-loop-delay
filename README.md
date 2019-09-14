@@ -18,8 +18,10 @@ const loopDelay = require('event-loop-delay')
 const sampler = loopDelay()
 
 setInterval(function () {
-  console.log('Accumulated delay in ms is', sampler.delay)
-  console.log('Accumulated times a delay was detected', sampler.times)
+  console.log('Last delay in ms is', sampler.delay)
+  console.log('Last delay was detected on', sampler.time)
+  console.log('Accumulated delay in ms is', sampler.accumulatedDelay)
+  console.log('Accumulated times a delay was detected', sampler.count)
 }, 1000)
 
 setInterval(function () {
@@ -39,9 +41,17 @@ Make a new sampler. Will sample the event loop every 10ms.
 
 #### `sampler.delay`
 
+Last measured event loop delay in ms.
+
+#### `sampler.time`
+
+Timestamp in ms when we last measured event loop delay.
+
+#### `sampler.accumulatedDelay`
+
 Accumulated event loop delay in ms measured since sampler was created.
 
-#### `sampler.times`
+#### `sampler.count`
 
 Accumulated times the event loop delay was detected.
 

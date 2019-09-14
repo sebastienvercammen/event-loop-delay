@@ -7,7 +7,9 @@ module.exports = function samplerJavascript () {
   const delayer = {
     native: false,
     delay: 0,
-    times: 0,
+    accumulatedDelay: 0,
+    count: 0,
+    time: 0,
     destroy () {
       clearInterval(interval)
     }
@@ -21,9 +23,11 @@ module.exports = function samplerJavascript () {
 
     prev = time
 
-    if (delta > 15) {
-      delayer.times++
-      delayer.delay += delta - 10
+    if (delta > 10) {
+      delayer.count++
+      delayer.time = time
+      delayer.delay = delta - 10
+      delayer.accumulatedDelay += delta - 10 // minus interval ms
     }
   }
 }

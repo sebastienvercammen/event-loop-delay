@@ -12,14 +12,23 @@ module.exports = function samplerNative () {
     get delay () {
       return view[0]
     },
-    get times () {
+    get count () {
       return view[1]
+    },
+    get time () {
+      return view[2]
     },
     destroy () {
       binding.stop_delay_timer(buf)
     },
     [util.inspect.custom] () {
-      return { native: true, delay: this.delay, times: this.times, destroy: this.destroy }
+      return {
+        native: true,
+        delay: this.delay,
+        count: this.count,
+        time: this.time,
+        destroy: this.destroy
+      }
     }
   }
 }

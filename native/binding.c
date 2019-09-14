@@ -8,7 +8,9 @@
 
 typedef struct {
   uint32_t delay;
-  uint32_t times;
+  uint32_t accumulatedDelay;
+  uint32_t count;
+  uint32_t time;
   uint64_t prev;
   uv_timer_t timer;
 } delay_timer_t;
@@ -21,9 +23,14 @@ static void on_uv_interval (uv_timer_t *req) {
 
   if (delta > DELAY_TIMER_THRESHOLD_NS) {
     delta = (delta - DELAY_TIMER_RESOLUTION_NS) / 1e6;
+
     if (delta > 0xffffffff) delta = 0xffffffff;
-    delay->delay += (uint32_t) delta;
-    delay->times++;
+    if (delta + delay->accumulatedDelay > 0xffffffff) delay->accumulatedDelay = 0;
+
+    delay->delay = (uint32_t) delta;
+    delay->accumulatedDelay += (uint32_t) delta;
+    delay->time = (uint32_t) (time / 1e6);
+    delay->count++;
   }
 
   delay->prev = time;
@@ -32,7 +39,7 @@ static void on_uv_interval (uv_timer_t *req) {
 NAPI_METHOD(stop_delay_timer) {
   NAPI_ARGV(1)
   NAPI_ARGV_BUFFER_CAST(delay_timer_t *, delay, 0)
-  
+
   uv_timer_stop(&(delay->timer));
 
   return NULL;
