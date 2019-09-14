@@ -1,7 +1,8 @@
 module.exports = function samplerJavascript () {
+  const DELAY_TIMER_RESOLUTION_MS = 10
   let prev = now()
 
-  const interval = setInterval(tick, 10)
+  const interval = setInterval(tick, DELAY_TIMER_RESOLUTION_MS)
   interval.unref()
 
   const delayer = {
@@ -23,11 +24,12 @@ module.exports = function samplerJavascript () {
 
     prev = time
 
-    if (delta > 10) {
+    if (delta > DELAY_TIMER_RESOLUTION_MS) {
+      delta = delta - DELAY_TIMER_RESOLUTION_MS
       delayer.count++
       delayer.time = time
-      delayer.delay = delta - 10
-      delayer.accumulatedDelay += delta - 10 // minus interval ms
+      delayer.delay = delta
+      delayer.accumulatedDelay += delta
     }
   }
 }
